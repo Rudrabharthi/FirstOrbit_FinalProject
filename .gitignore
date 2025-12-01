@@ -1,0 +1,6 @@
+﻿node_modules/
+.env
+uploads/
+package-lock.json
+*.pptx
+generate-ppt*.js
