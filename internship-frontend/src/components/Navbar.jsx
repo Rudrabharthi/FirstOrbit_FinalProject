@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -94,3 +94,55 @@ const Navbar = () => {
                       to={user?.role === 'admin' ? '/admin' : user?.role === 'company' ? '/company' : '/student'}
                       className={`block px-4 py-2 text-sm transition-colors ${
                         isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/profile"
+                      className={`block px-4 py-2 text-sm transition-colors ${
+                        isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      My Profile
+                    </Link>
+                    <hr className={`my-1 ${isDark ? 'border-gray-700' : 'border-gray-200'}`} />
+                    <button
+                      onClick={handleLogout}
+                      className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
+                        isDark ? 'text-red-400 hover:bg-gray-700' : 'text-red-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isDark 
+                      ? 'text-gray-300 hover:text-white hover:bg-gray-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
