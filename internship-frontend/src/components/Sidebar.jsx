@@ -43,3 +43,43 @@ const Sidebar = () => {
     { path: '/student/applications', label: 'Applications', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
   ];
 
+  const links = isAdmin ? adminLinks : isCompany ? companyLinks : studentLinks;
+  const roleLabel = isAdmin ? 'Admin' : isCompany ? 'Company' : 'Student';
+  const roleColor = isAdmin ? 'bg-red-100 text-red-600' : isCompany ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600';
+
+  return (
+    <>
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={closeMobileMenu}
+        />
+      )}
+
+      {/* Mobile Toggle Button */}
+      <button
+        onClick={() => useSidebar().toggleMobileMenu?.() || closeMobileMenu()}
+        className={`fixed bottom-4 left-4 z-50 lg:hidden p-3 rounded-full shadow-lg transition-colors ${
+          isDark ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-indigo-600 text-white hover:bg-indigo-700'
+        }`}
+        style={{ display: isMobileOpen ? 'none' : 'block' }}
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed top-0 left-0 h-full z-50 transition-all duration-300
+        ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}
+        ${isCollapsed ? 'w-20' : 'w-64'}
+        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        border-r shadow-lg
+      `}>
+        {/* Header */}
+        <div className={`flex items-center justify-between h-16 px-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+          {!isCollapsed && (
+            <Link to="/" className={`text-xl font-bold ${isDark ? 'text-white' : 'text-indigo-600'}`}>
+              IMS
