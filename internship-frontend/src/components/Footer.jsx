@@ -51,3 +51,56 @@ const Footer = () => {
       ),
     },
     {
+      name: 'X',
+      href: 'https://x.com',
+      hoverColor: 'hover:text-[#000000] dark:hover:text-white',
+      icon: (
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      ),
+    },
+  ];
+
+  return (
+    <footer className={`mt-auto transition-all duration-300 ${footerMargin}`}>
+      {/* Gradient accent top border */}
+      <div className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+
+      <div className={`${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-800'}`}>
+        {/* Main footer content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            {/* Brand Section */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <span className="text-lg font-bold tracking-tight">FirstOrbit</span>
+              </div>
+              <p className={`text-sm leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                Connecting students with the right internship opportunities. Your career journey starts here.
+              </p>
+            </div>
+
+            {/* Social Media */}
+            <div>
+              <h4 className={`text-sm font-semibold uppercase tracking-wider mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                Follow Us
+              </h4>
+              <div className="flex items-center gap-3">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.name}
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200 transform hover:scale-110 ${
+                      isDark
+                        ? `bg-gray-800 text-gray-400 ${social.hoverColor} hover:bg-gray-700`
+                        : `bg-gray-100 text-gray-500 ${social.hoverColor} hover:bg-white hover:shadow-md`
