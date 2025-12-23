@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useSidebar } from '../context/SidebarContext';
 import { useAuth } from '../context/AuthContext';
@@ -104,3 +104,53 @@ const Footer = () => {
                       isDark
                         ? `bg-gray-800 text-gray-400 ${social.hoverColor} hover:bg-gray-700`
                         : `bg-gray-100 text-gray-500 ${social.hoverColor} hover:bg-white hover:shadow-md`
+                    }`}
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Team / Contact */}
+            <div>
+              <h4 className={`text-sm font-semibold uppercase tracking-wider mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                Our Team
+              </h4>
+              <div className="space-y-2.5">
+                {developers.map((dev) => (
+                  <div key={dev.name} className="flex items-center gap-2.5">
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                      isDark ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-100 text-indigo-600'
+                    }`}>
+                      {dev.name.charAt(0)}
+                    </div>
+                    <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {dev.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className={`border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+              <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                © {new Date().getFullYear()} FirstOrbit — Internship Management System
+              </p>
+              <p className={`text-xs ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                Built with <span className="text-red-400">♥</span> using React & Node.js
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
