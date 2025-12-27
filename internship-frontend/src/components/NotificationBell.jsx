@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import notificationService from '../services/notificationService';
@@ -158,3 +158,91 @@ const NotificationBell = () => {
             strokeLinejoin="round" 
             strokeWidth="2" 
             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" 
+          />
+        </svg>
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full animate-pulse">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
+      </button>
+
+      {isOpen && (
+        <div 
+          className={`absolute right-0 mt-2 w-72 sm:w-80 rounded-lg shadow-xl border z-50 max-h-[80vh] overflow-hidden ${
+            isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+          }`}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="flex items-center justify-between px-4 py-3 bg-indigo-600 text-white rounded-t-lg">
+            <h3 className="text-sm font-semibold">Notifications</h3>
+            {unreadCount > 0 && (
+              <button
+                onClick={handleMarkAllAsRead}
+                className="text-xs text-indigo-100 hover:text-white underline"
+              >
+                Mark all read
+              </button>
+            )}
+          </div>
+
+          <div className="max-h-80 overflow-y-auto">
+            {loading ? (
+              <div className="p-4 text-center">
+                <div className="animate-spin w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full mx-auto"></div>
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className={`p-6 text-center ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <svg className="w-10 h-10 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <p className="text-sm">No notifications</p>
+              </div>
+            ) : (
+              notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  onClick={() => !notification.is_read && handleMarkAsRead(notification.id)}
+                  className={`px-4 py-3 border-b cursor-pointer transition-colors duration-150 ${
+                    isDark 
+                      ? `border-gray-700 hover:bg-gray-700 ${!notification.is_read ? 'bg-gray-750' : ''}` 
+                      : `border-gray-100 hover:bg-gray-50 ${!notification.is_read ? 'bg-indigo-50' : ''}`
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className={`px-2 py-0.5 text-xs rounded-full flex-shrink-0 ${getTypeColor(notification.type)}`}>
+                      {notification.type || 'info'}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-medium truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                        {notification.title}
+                      </p>
+                      <p className={`text-xs mt-1 line-clamp-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {notification.message}
+                      </p>
+                      <p className={`text-xs mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                        {formatDate(notification.created_at)}
+                      </p>
+                    </div>
+                    {!notification.is_read && (
+                      <span className="w-2 h-2 bg-indigo-600 rounded-full flex-shrink-0 mt-1.5"></span>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          
+          <div className={`px-4 py-2 border-t text-center ${isDark ? 'bg-gray-750 border-gray-700' : 'bg-gray-50 border-gray-100'}`}>
+            <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+              {isHovering ? 'Hovering - staying open' : 'Auto-closes in 3s'}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default NotificationBell;
