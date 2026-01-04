@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import authService from '../services/authService';
@@ -108,3 +108,109 @@ const ForgotPasswordPage = () => {
                 required
               />
             </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            >
+              {loading ? 'Sending...' : 'Send Reset Code'}
+            </button>
+
+            <p className={`text-center text-sm ${textSecondary}`}>
+              Remember your password?{' '}
+              <Link to="/login" className="text-indigo-600 hover:underline">
+                Back to Login
+              </Link>
+            </p>
+          </form>
+        )}
+
+        {/* Step 2: Enter Code and New Password */}
+        {step === 2 && (
+          <form onSubmit={handleResetPassword} className="space-y-4">
+            {/* Demo Code Display */}
+            {demoCode && (
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg text-sm">
+                <strong>Demo Mode:</strong> Your reset code is <span className="font-mono font-bold">{demoCode}</span>
+              </div>
+            )}
+
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Reset Code</label>
+              <input
+                type="text"
+                value={resetCode}
+                onChange={(e) => setResetCode(e.target.value)}
+                className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 font-mono text-center text-lg tracking-widest ${inputBg}`}
+                placeholder="000000"
+                maxLength={6}
+                required
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>New Password</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                placeholder="Enter new password"
+                minLength={6}
+                required
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Confirm Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                placeholder="Confirm new password"
+                minLength={6}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            >
+              {loading ? 'Resetting...' : 'Reset Password'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setStep(1)}
+              className={`w-full py-2 rounded-lg transition-colors ${isDark ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            >
+              Back
+            </button>
+          </form>
+        )}
+
+        {/* Step 3: Success */}
+        {step === 3 && (
+          <div className="text-center space-y-4">
+            <div className="text-green-500 text-6xl mb-4">✓</div>
+            <p className={textSecondary}>
+              Your password has been reset successfully. You can now login with your new password.
+            </p>
+            <Link
+              to="/login"
+              className="block w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-center"
+            >
+              Go to Login
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ForgotPasswordPage;
