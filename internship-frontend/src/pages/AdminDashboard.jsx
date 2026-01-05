@@ -83,3 +83,98 @@ const AdminDashboard = () => {
               </svg>
             </div>
             <div className="ml-3 sm:ml-5 w-0 flex-1">
+              <dl>
+                <dt className={`text-xs sm:text-sm font-medium truncate ${textSecondary}`}>
+                  Total Internships
+                </dt>
+                <dd className={`text-lg sm:text-xl lg:text-2xl font-semibold ${textPrimary}`}>
+                  {stats.totalInternships}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Companies */}
+        <div className={`rounded-lg shadow p-3 sm:p-4 lg:p-6 ${cardBg}`}>
+          <div className="flex items-center">
+            <div className="flex-shrink-0 bg-green-500 rounded-md p-2 sm:p-3">
+              <svg className="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <div className="ml-3 sm:ml-5 w-0 flex-1">
+              <dl>
+                <dt className={`text-xs sm:text-sm font-medium truncate ${textSecondary}`}>
+                  Total Companies
+                </dt>
+                <dd className={`text-lg sm:text-xl lg:text-2xl font-semibold ${textPrimary}`}>
+                  {stats.totalCompanies}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Students */}
+        <div className={`rounded-lg shadow p-3 sm:p-4 lg:p-6 ${cardBg}`}>
+          <div className="flex items-center">
+            <div className="flex-shrink-0 bg-yellow-500 rounded-md p-2 sm:p-3">
+              <svg className="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+            <div className="ml-3 sm:ml-5 w-0 flex-1">
+              <dl>
+                <dt className={`text-xs sm:text-sm font-medium truncate ${textSecondary}`}>
+                  Total Students
+                </dt>
+                <dd className={`text-lg sm:text-xl lg:text-2xl font-semibold ${textPrimary}`}>
+                  {stats.totalStudents}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Applications */}
+        <div className={`rounded-lg shadow p-3 sm:p-4 lg:p-6 ${cardBg}`}>
+          <div className="flex items-center">
+            <div className="flex-shrink-0 bg-red-500 rounded-md p-2 sm:p-3">
+              <svg className="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div className="ml-3 sm:ml-5 w-0 flex-1">
+              <dl>
+                <dt className={`text-xs sm:text-sm font-medium truncate ${textSecondary}`}>
+                  Total Applications
+                </dt>
+                <dd className={`text-lg sm:text-xl lg:text-2xl font-semibold ${textPrimary}`}>
+                  {stats.totalApplications}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className={`rounded-lg shadow p-4 sm:p-6 mb-4 sm:mb-6 lg:mb-8 ${cardBg}`}>
+        <h2 className={`text-lg sm:text-xl font-bold mb-4 ${textPrimary}`}>Quick Actions</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <Link
+            to="/admin/internships"
+            className="bg-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-indigo-700 text-center text-sm sm:text-base transition-colors"
+          >
+            Manage All Internships
+          </Link>
+          <Link
+            to="/admin/companies"
+            className="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-green-700 text-center text-sm sm:text-base transition-colors"
+          >
+            Manage Companies
+          </Link>
+          <Link
+            to="/admin/users"
+            className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-yellow-700 text-center text-sm sm:text-base transition-colors"
