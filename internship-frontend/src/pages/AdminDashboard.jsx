@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import analyticsService from "../services/analyticsService";
 import internshipService from "../services/internshipService";
@@ -178,3 +178,85 @@ const AdminDashboard = () => {
           <Link
             to="/admin/users"
             className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-yellow-700 text-center text-sm sm:text-base transition-colors"
+          >
+            Manage Users
+          </Link>
+        </div>
+      </div>
+
+      {/* Recent Internships */}
+      <div className={`rounded-lg shadow p-4 sm:p-6 ${cardBg}`}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className={`text-lg sm:text-xl font-bold ${textPrimary}`}>Recent Internships</h2>
+          <Link to="/admin/internships" className="text-indigo-600 hover:text-indigo-800 text-sm sm:text-base">
+            View All
+          </Link>
+        </div>
+
+        {recentInternships.length === 0 ? (
+          <p className={textSecondary}>No internships posted yet.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className={isDark ? 'bg-gray-700' : 'bg-gray-50'}>
+                <tr>
+                  <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${textSecondary}`}>
+                    Title
+                  </th>
+                  <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider hidden sm:table-cell ${textSecondary}`}>
+                    Company
+                  </th>
+                  <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider hidden md:table-cell ${textSecondary}`}>
+                    Location
+                  </th>
+                  <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${textSecondary}`}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${isDark ? 'divide-gray-700' : 'divide-gray-200'}`}>
+                {recentInternships.map((internship) => (
+                  <tr key={internship._id || internship.id} className={isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}>
+                    <td className={`px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium ${textPrimary}`}>
+                      {internship.title}
+                    </td>
+                    <td className={`px-4 sm:px-6 py-4 whitespace-nowrap text-sm hidden sm:table-cell ${textSecondary}`}>
+                      {internship.company?.name || internship.companyName}
+                    </td>
+                    <td className={`px-4 sm:px-6 py-4 whitespace-nowrap text-sm hidden md:table-cell ${textSecondary}`}>
+                      {internship.location}
+                    </td>
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex gap-2 sm:gap-4">
+                        <Link
+                          to={`/internships/${internship._id || internship.id}`}
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          View
+                        </Link>
+                        <Link
+                          to={`/admin/internships/edit/${internship._id || internship.id}`}
+                          className="text-yellow-600 hover:text-yellow-900"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteInternship(internship._id || internship.id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;
