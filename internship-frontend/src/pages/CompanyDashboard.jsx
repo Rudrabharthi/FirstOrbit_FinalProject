@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -143,3 +143,142 @@ const CompanyDashboard = () => {
               </dl>
             </div>
           </div>
+        </div>
+
+        <div className={`${cardBg} rounded-lg shadow p-6`}>
+          <div className="flex items-center">
+            <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+              <svg
+                className="h-6 w-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg>
+            </div>
+            <div className="ml-5 w-0 flex-1">
+              <dl>
+                <dt className={`text-sm font-medium ${textMuted} truncate`}>
+                  Total Applicants
+                </dt>
+                <dd className={`text-2xl font-semibold ${textPrimary}`}>
+                  {stats.totalApplicants}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* My Internships */}
+      <div className={`${cardBg} rounded-lg shadow p-6`}>
+        <h2 className={`text-xl font-bold ${textPrimary} mb-4`}>My Internships</h2>
+
+        {internships.length === 0 ? (
+          <div className="text-center py-12">
+            <p className={`${textMuted} mb-4`}>
+              You haven't posted any internships yet.
+            </p>
+            <Link
+              to="/company/internships/new"
+              className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
+            >
+              Post Your First Internship
+            </Link>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className={`min-w-full divide-y ${tableDivide}`}>
+              <thead className={tableBg}>
+                <tr>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Title
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Location
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Status
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Applicants
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className={`${tableRowBg} divide-y ${tableDivide}`}>
+                {internships.map((internship) => (
+                  <tr key={internship._id || internship.id}>
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${textPrimary}`}>
+                      {internship.title}
+                    </td>
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm ${textMuted}`}>
+                      {internship.location}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          internship.status === "active"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                            : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                        }`}
+                      >
+                        {internship.status || "active"}
+                      </span>
+                    </td>
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm ${textMuted}`}>
+                      <Link
+                        to={`/company/internships/${
+                          internship._id || internship.id
+                        }/applicants`}
+                        className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 font-medium"
+                      >
+                        {internship.application_count || 0} applicants
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <Link
+                        to={`/internships/${internship._id || internship.id}`}
+                        className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 mr-4"
+                      >
+                        View
+                      </Link>
+                      <Link
+                        to={`/company/internships/edit/${
+                          internship._id || internship.id
+                        }`}
+                        className="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 mr-4"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() =>
+                          handleDeleteInternship(
+                            internship._id || internship.id
+                          )
+                        }
+                        className="text-red-600 dark:text-red-400 hover:text-red-900"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default CompanyDashboard;
