@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import applicationService from "../services/applicationService";
@@ -168,3 +168,169 @@ const StudentDashboard = () => {
             <div className="ml-5 w-0 flex-1">
               <dl>
                 <dt className={`text-sm font-medium ${textMuted} truncate`}>
+                  Accepted
+                </dt>
+                <dd className={`text-2xl font-semibold ${textPrimary}`}>
+                  {stats.accepted}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div className={`${cardBg} rounded-lg shadow p-6`}>
+          <div className="flex items-center">
+            <div className="flex-shrink-0 bg-red-500 rounded-md p-3">
+              <svg
+                className="h-6 w-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </div>
+            <div className="ml-5 w-0 flex-1">
+              <dl>
+                <dt className={`text-sm font-medium ${textMuted} truncate`}>
+                  Rejected
+                </dt>
+                <dd className={`text-2xl font-semibold ${textPrimary}`}>
+                  {stats.rejected}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className={`${cardBg} rounded-lg shadow p-6 mb-8`}>
+        <h2 className={`text-xl font-bold ${textPrimary} mb-4`}>Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link
+            to="/internships"
+            className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-center"
+          >
+            Browse All Internships
+          </Link>
+          <Link
+            to="/student/applications"
+            className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-center"
+          >
+            View My Applications
+          </Link>
+        </div>
+      </div>
+
+      {/* Recommended Internships */}
+      {recommendedInternships.length > 0 && (
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className={`text-xl font-bold ${textPrimary}`}>Recommended Internships</h2>
+            <Link
+              to="/internships"
+              className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
+            >
+              View All
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recommendedInternships.map((internship) => (
+              <InternshipCard
+                key={internship._id || internship.id}
+                internship={internship}
+                showActions={false}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Applications */}
+      <div className={`${cardBg} rounded-lg shadow p-6`}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className={`text-xl font-bold ${textPrimary}`}>Recent Applications</h2>
+          <Link
+            to="/student/applications"
+            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
+          >
+            View All
+          </Link>
+        </div>
+
+        {applications.length === 0 ? (
+          <div className="text-center py-12">
+            <p className={`${textMuted} mb-4`}>
+              You haven't applied to any internships yet.
+            </p>
+            <Link
+              to="/internships"
+              className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
+            >
+              Browse Internships
+            </Link>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className={`min-w-full divide-y ${tableDivide}`}>
+              <thead className={tableBg}>
+                <tr>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Internship
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Company
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Applied On
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className={`${tableRowBg} divide-y ${tableDivide}`}>
+                {applications.slice(0, 5).map((application) => (
+                  <tr key={application._id || application.id}>
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${textPrimary}`}>
+                      {application.internship_title || application.internship?.title || "N/A"}
+                    </td>
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm ${textMuted}`}>
+                      {application.company_name || application.internship?.company?.name ||
+                        application.internship?.companyName ||
+                        "N/A"}
+                    </td>
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm ${textMuted}`}>
+                      {new Date(application.applied_at || application.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          application.status === "accepted"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                            : application.status === "rejected"
+                            ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                            : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                        }`}
+                      >
+                        {application.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default StudentDashboard;
