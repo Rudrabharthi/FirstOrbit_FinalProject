@@ -108,3 +108,118 @@ const ProfilePage = () => {
   const textSecondary = isDark ? 'text-gray-400' : 'text-gray-600';
   const inputBg = isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300';
   const tabActive = 'bg-indigo-600 text-white';
+  const tabInactive = isDark ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300';
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <h1 className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-6 ${textPrimary}`}>
+        My Profile
+      </h1>
+
+      {/* Message */}
+      {message.text && (
+        <div className={`mb-6 px-4 py-3 rounded-lg ${
+          message.type === 'success' ? 'bg-green-100 text-green-700 border border-green-400' : 'bg-red-100 text-red-700 border border-red-400'
+        }`}>
+          {message.text}
+        </div>
+      )}
+
+      {/* Tabs */}
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setActiveTab('profile')}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'profile' ? tabActive : tabInactive}`}
+        >
+          Edit Profile
+        </button>
+        <button
+          onClick={() => setActiveTab('password')}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'password' ? tabActive : tabInactive}`}
+        >
+          Change Password
+        </button>
+      </div>
+
+      {/* Profile Tab */}
+      {activeTab === 'profile' && (
+        <div className={`rounded-lg shadow-md p-6 ${cardBg}`}>
+          <h2 className={`text-lg font-semibold mb-4 ${textPrimary}`}>Profile Information</h2>
+          
+          <form onSubmit={handleProfileSubmit} className="space-y-4">
+            {/* Email (read-only) */}
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Email</label>
+              <input
+                type="email"
+                value={user?.email || ''}
+                disabled
+                className={`w-full px-4 py-2 rounded-lg border opacity-60 cursor-not-allowed ${inputBg}`}
+              />
+              <p className={`text-xs mt-1 ${textSecondary}`}>Email cannot be changed</p>
+            </div>
+
+            {/* Role (read-only) */}
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Role</label>
+              <input
+                type="text"
+                value={user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1) || ''}
+                disabled
+                className={`w-full px-4 py-2 rounded-lg border opacity-60 cursor-not-allowed ${inputBg}`}
+              />
+            </div>
+
+            {/* Student/Company specific fields */}
+            {user?.role === 'student' && (
+              <>
+                <div>
+                  <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Full Name</label>
+                  <input
+                    type="text"
+                    value={profileForm.name}
+                    onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                    className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                    placeholder="Enter your full name"
+                  />
+                </div>
+
+                <div>
+                  <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Phone</label>
+                  <input
+                    type="tel"
+                    value={profileForm.phone}
+                    onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                    className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+
+                <div>
+                  <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Department / Branch</label>
+                  <input
+                    type="text"
+                    value={profileForm.department}
+                    onChange={(e) => setProfileForm({ ...profileForm, department: e.target.value })}
+                    className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                    placeholder="e.g., Computer Science, Electronics"
+                  />
+                </div>
+
+                <div>
+                  <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Skills</label>
+                  <textarea
+                    value={profileForm.skills}
+                    onChange={(e) => setProfileForm({ ...profileForm, skills: e.target.value })}
+                    className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                    rows={3}
+                    placeholder="e.g., JavaScript, React, Python"
+                  />
+                </div>
+              </>
+            )}
+
+            {user?.role === 'company' && (
+              <>
+                <div>
+                  <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Company Name</label>
