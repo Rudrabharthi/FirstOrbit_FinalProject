@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import authService from '../services/authService';
@@ -223,3 +223,116 @@ const ProfilePage = () => {
               <>
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Company Name</label>
+                  <input
+                    type="text"
+                    value={profileForm.companyName}
+                    onChange={(e) => setProfileForm({ ...profileForm, companyName: e.target.value })}
+                    className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                    placeholder="Enter company name"
+                  />
+                </div>
+
+                <div>
+                  <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Description</label>
+                  <textarea
+                    value={profileForm.companyDescription}
+                    onChange={(e) => setProfileForm({ ...profileForm, companyDescription: e.target.value })}
+                    className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                    rows={3}
+                    placeholder="Describe your company"
+                  />
+                </div>
+
+                <div>
+                  <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Website</label>
+                  <input
+                    type="url"
+                    value={profileForm.website}
+                    onChange={(e) => setProfileForm({ ...profileForm, website: e.target.value })}
+                    className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                    placeholder="https://example.com"
+                  />
+                </div>
+              </>
+            )}
+
+            {user?.role === 'admin' && (
+              <div>
+                <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Name</label>
+                <input
+                  type="text"
+                  value={profileForm.name}
+                  onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                  className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                  placeholder="Enter your name"
+                />
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            >
+              {saving ? 'Saving...' : 'Save Changes'}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Password Tab */}
+      {activeTab === 'password' && (
+        <div className={`rounded-lg shadow-md p-6 ${cardBg}`}>
+          <h2 className={`text-lg font-semibold mb-4 ${textPrimary}`}>Change Password</h2>
+          
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Current Password</label>
+              <input
+                type="password"
+                value={passwordForm.currentPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                required
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>New Password</label>
+              <input
+                type="password"
+                value={passwordForm.newPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                minLength={6}
+                required
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-1 ${textSecondary}`}>Confirm New Password</label>
+              <input
+                type="password"
+                value={passwordForm.confirmPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                className={`w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500 ${inputBg}`}
+                minLength={6}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            >
+              {saving ? 'Changing...' : 'Change Password'}
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProfilePage;
