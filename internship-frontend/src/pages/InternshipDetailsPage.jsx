@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -223,3 +223,116 @@ const InternshipDetailsPage = () => {
                 Requirements
               </h2>
               <p className={`${textSecondary} whitespace-pre-line`}>
+                {internship.required_skills || internship.requirements}
+              </p>
+            </div>
+          )}
+
+          {/* Deadline */}
+          {(internship.deadline || internship.applicationDeadline) && (
+            <div>
+              <h2 className={`text-xl font-bold ${textPrimary} mb-3`}>
+                Application Deadline
+              </h2>
+              <p className={textSecondary}>
+                {new Date(internship.deadline || internship.applicationDeadline).toLocaleDateString(
+                  "en-US",
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
+              </p>
+            </div>
+          )}
+
+          {/* Status Badge */}
+          <div>
+            <span
+              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                internship.status === "active"
+                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                  : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+              }`}
+            >
+              Status: {internship.status || "Active"}
+            </span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className={`flex flex-wrap gap-4 pt-6 border-t ${borderColor}`}>
+            {isStudent && (
+                <div className="w-full mb-4">
+                    <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+                        Upload Resume (PDF, DOC, DOCX - Max 10MB) <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleFileChange}
+                        className={`block w-full text-sm ${textSecondary}
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-indigo-50 file:text-indigo-700
+                        hover:file:bg-indigo-100 dark:file:bg-gray-700 dark:file:text-indigo-400`}
+                    />
+                </div>
+            )}
+            
+            {isStudent && (
+              <button
+                onClick={handleApply}
+                disabled={applying || internship.status === "closed" || !selectedFile}
+                className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
+              >
+                {applying
+                  ? "Submitting..."
+                  : internship.status === "closed"
+                  ? "Applications Closed"
+                  : selectedFile ? "Apply Now" : "Upload Resume to Apply"}
+              </button>
+            )}
+
+            {(isCompany || isAdmin) && (
+              <>
+                <Link
+                  to={`${
+                    isAdmin ? "/admin" : "/company"
+                  }/internships/edit/${id}`}
+                  className="flex-1 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 text-center font-medium"
+                >
+                  Edit Internship
+                </Link>
+                {isCompany && (
+                  <Link
+                    to={`/company/internships/${id}/applicants`}
+                    className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-center font-medium"
+                  >
+                    View Applicants
+                  </Link>
+                )}
+                <button
+                  onClick={handleDelete}
+                  className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-medium"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+
+            <button
+              onClick={() => navigate(-1)}
+              className={`px-6 py-3 rounded-lg font-medium ${isDark ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            >
+              Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default InternshipDetailsPage;
