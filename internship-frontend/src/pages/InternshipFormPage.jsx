@@ -128,3 +128,123 @@ const InternshipFormPage = () => {
             Description *
           </label>
           <textarea
+            id="description"
+            rows="5"
+            {...register("description", {
+              required: "Description is required",
+            })}
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+            placeholder="Describe the internship role, responsibilities, and what the intern will learn..."
+          />
+          {errors.description && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.description.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="required_skills"
+            className={`block text-sm font-medium ${textSecondary} mb-1`}
+          >
+            Required Skills *
+          </label>
+          <textarea
+            id="required_skills"
+            rows="4"
+            {...register("required_skills", {
+              required: "Required skills are required",
+            })}
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+            placeholder="List the required skills, qualifications, and experience..."
+          />
+          {errors.required_skills && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.required_skills.message}
+            </p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label
+              htmlFor="location"
+              className={`block text-sm font-medium ${textSecondary} mb-1`}
+            >
+              Location *
+            </label>
+            <select
+              id="location"
+              {...register("location", { required: "Location is required" })}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+            >
+              <option value="">Select location type</option>
+              <option value="On-site">On-site</option>
+              <option value="Remote">Remote</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+            {errors.location && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.location.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="duration"
+              className={`block text-sm font-medium ${textSecondary} mb-1`}
+            >
+              Duration *
+            </label>
+            <input
+              id="duration"
+              type="text"
+              {...register("duration", { required: "Duration is required" })}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+              placeholder="e.g., 3 months, 6 months"
+            />
+            {errors.duration && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.duration.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label
+              htmlFor="stipend_type"
+              className={`block text-sm font-medium ${textSecondary} mb-1`}
+            >
+              Stipend Type
+            </label>
+            <select
+              id="stipend_type"
+              {...register("stipend_type")}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+            >
+              <option value="Paid">Paid</option>
+              <option value="Unpaid">Unpaid</option>
+              <option value="Negotiable">Negotiable</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="stipend_amount"
+              className={`block text-sm font-medium ${textSecondary} mb-1`}
+            >
+              Stipend Amount (per month)
+            </label>
+            <input
+              id="stipend_amount"
+              type="text"
+              inputMode="numeric"
+              {...register("stipend_amount", { 
+                pattern: { value: /^\d+$/, message: "Please enter a valid positive number" } 
+              })}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+              placeholder="e.g., 10000"
