@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
@@ -248,3 +248,128 @@ const InternshipFormPage = () => {
               })}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
               placeholder="e.g., 10000"
+            />
+            {errors.stipend_amount && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.stipend_amount.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label
+              htmlFor="deadline"
+              className={`block text-sm font-medium ${textSecondary} mb-1`}
+            >
+              Application Deadline
+            </label>
+            <input
+              id="deadline"
+              type="date"
+              {...register("deadline")}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="openings"
+              className={`block text-sm font-medium ${textSecondary} mb-1`}
+            >
+              Number of Openings
+            </label>
+            <input
+              id="openings"
+              type="text"
+              inputMode="numeric"
+              defaultValue="1"
+              {...register("openings", { 
+                required: "Number of openings is required",
+                pattern: { value: /^[1-9]\d*$/, message: "Please enter a valid number (at least 1)" } 
+              })}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+              placeholder="e.g., 5"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label
+              htmlFor="eligibility_cgpa"
+              className={`block text-sm font-medium ${textSecondary} mb-1`}
+            >
+              Minimum CGPA (optional)
+            </label>
+            <input
+              id="eligibility_cgpa"
+              type="number"
+              step="0.1"
+              {...register("eligibility_cgpa")}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+              placeholder="e.g., 7.0"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="status"
+              className={`block text-sm font-medium ${textSecondary} mb-1`}
+            >
+              Status
+            </label>
+            <select
+              id="status"
+              {...register("status")}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+            >
+              <option value="active">Active</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label
+            htmlFor="eligible_departments"
+            className={`block text-sm font-medium ${textSecondary} mb-1`}
+          >
+            Eligible Departments (optional)
+          </label>
+          <input
+            id="eligible_departments"
+            type="text"
+            {...register("eligible_departments")}
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none ${inputClass}`}
+            placeholder="e.g., Computer Science, IT, Electronics"
+          />
+        </div>
+
+        <div className="flex justify-end space-x-4 pt-4">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className={`px-6 py-2 border rounded-md ${buttonSecondary}`}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-400"
+          >
+            {loading
+              ? "Saving..."
+              : isEditMode
+              ? "Update Internship"
+              : "Post Internship"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default InternshipFormPage;
