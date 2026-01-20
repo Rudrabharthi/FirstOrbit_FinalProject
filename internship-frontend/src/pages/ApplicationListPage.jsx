@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import applicationService from "../services/applicationService";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -118,3 +118,114 @@ const ApplicationListPage = () => {
       {/* Applications List */}
       {filteredApplications.length === 0 ? (
         <div className={`${cardBg} rounded-lg shadow p-12 text-center`}>
+          <p className={`${textSecondary} text-lg mb-4`}>
+            {filter === "all"
+              ? "You haven't applied to any internships yet."
+              : `No ${filter} applications.`}
+          </p>
+          <Link
+            to="/internships"
+            className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
+          >
+            Browse Internships
+          </Link>
+        </div>
+      ) : (
+        <div className={`${cardBg} rounded-lg shadow overflow-hidden`}>
+          <div className="overflow-x-auto">
+            <table className={`min-w-full divide-y ${tableDivide}`}>
+              <thead className={tableHeadBg}>
+                <tr>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textSecondary} uppercase tracking-wider`}>
+                    Internship
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textSecondary} uppercase tracking-wider`}>
+                    Company
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textSecondary} uppercase tracking-wider`}>
+                    Location
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textSecondary} uppercase tracking-wider`}>
+                    Applied On
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textSecondary} uppercase tracking-wider`}>
+                    Status
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textSecondary} uppercase tracking-wider`}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className={`${cardBg} divide-y ${tableDivide}`}>
+                {filteredApplications.map((application) => (
+                  <tr
+                    key={application._id || application.id}
+                    className={hoverBg}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm font-medium ${textPrimary}`}>
+                        {application.internship_title || application.internship?.title || "N/A"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm ${textSecondary}`}>
+                        {application.company_name ||
+                          application.internship?.company?.name ||
+                          "N/A"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm ${textSecondary}`}>
+                        {application.location || application.internship?.location || "N/A"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm ${textSecondary}`}>
+                        {new Date(application.applied_at || application.createdAt).toLocaleDateString()}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          application.status === "accepted"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                            : application.status === "rejected"
+                            ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                            : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                        }`}
+                      >
+                        {application.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <Link
+                        to={`/internships/${
+                          application.internship_id || application.internship?._id
+                        }`}
+                        className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4"
+                      >
+                        View Internship
+                      </Link>
+                      {application.status === "pending" && (
+                        <button
+                          onClick={() =>
+                            handleWithdraw(application._id || application.id)
+                          }
+                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                        >
+                          Withdraw
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ApplicationListPage;
