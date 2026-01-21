@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import internshipService from "../services/internshipService";
@@ -133,3 +133,130 @@ const ApplicantsPage = () => {
                     Resume
                   </th>
                   <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Email
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Department
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Phone
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Applied On
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Status
+                  </th>
+                  <th className={`px-6 py-3 text-left text-xs font-medium ${textMuted} uppercase tracking-wider`}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className={`${tableRowBg} divide-y ${tableDivide}`}>
+                {applicants.map((applicant) => (
+                  <tr
+                    key={applicant._id || applicant.id}
+                    className={tableHover}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm font-medium ${textPrimary}`}>
+                        {applicant.name || applicant.student?.name || applicant.studentName || "N/A"}
+                      </div>
+                      {applicant.skills && (
+                        <div className={`text-xs ${textMuted} mt-1`}>
+                          Skills: {applicant.skills}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {(applicant.resume_path || applicant.student?.resume_path) ? (
+                        <a 
+                          href={getResumeUrl(applicant.resume_path || applicant.student?.resume_path)} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center"
+                        >
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                          </svg>
+                          View Resume
+                        </a>
+                      ) : (
+                        <span className={`text-sm ${textMuted} italic`}>No Resume</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm ${textMuted}`}>
+                        {applicant.email || applicant.student?.email || applicant.studentEmail || "N/A"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm ${textMuted}`}>
+                        {applicant.department || applicant.student?.department || "N/A"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm ${textMuted}`}>
+                        {applicant.phone || applicant.student?.phone || "N/A"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className={`text-sm ${textMuted}`}>
+                        {new Date(applicant.applied_at || applicant.createdAt).toLocaleDateString()}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          applicant.status === "accepted"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                            : applicant.status === "rejected"
+                            ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                            : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                        }`}
+                      >
+                        {applicant.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      {applicant.status === "pending" ? (
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() =>
+                              handleStatusUpdate(
+                                applicant._id || applicant.id,
+                                "accepted"
+                              )
+                            }
+                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-xs"
+                          >
+                            ✅ Accept
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleStatusUpdate(
+                                applicant._id || applicant.id,
+                                "rejected"
+                              )
+                            }
+                            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-xs"
+                          >
+                            ❌ Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <span className={textMuted}>—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ApplicantsPage;
