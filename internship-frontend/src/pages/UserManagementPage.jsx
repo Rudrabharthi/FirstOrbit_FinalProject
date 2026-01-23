@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import userService from "../services/userService";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useTheme } from "../context/ThemeContext";
@@ -128,3 +128,129 @@ const UserManagementPage = () => {
                 </th>
                 <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${textSecondary}`}>
                   Name
+                </th>
+                <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider hidden sm:table-cell ${textSecondary}`}>
+                  Email
+                </th>
+                <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${textSecondary}`}>
+                  Role
+                </th>
+                <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider hidden md:table-cell ${textSecondary}`}>
+                  Created
+                </th>
+                <th className={`px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${textSecondary}`}>
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className={`divide-y ${borderColor}`}>
+              {users.map((user) => (
+                <tr key={user.id} className={isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}>
+                  <td className={`px-4 sm:px-6 py-4 whitespace-nowrap text-sm ${textSecondary}`}>
+                    {user.id}
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                    {editingUser?.id === user.id ? (
+                      <input
+                        value={editForm.name}
+                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                        className={`border rounded px-2 py-1 text-sm w-full ${inputBg}`}
+                      />
+                    ) : (
+                      <span className={`text-sm font-medium ${textPrimary}`}>
+                        {user.name || "-"}
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                    {editingUser?.id === user.id ? (
+                      <input
+                        value={editForm.email}
+                        onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                        className={`border rounded px-2 py-1 text-sm w-full ${inputBg}`}
+                      />
+                    ) : (
+                      <span className={`text-sm ${textSecondary}`}>{user.email}</span>
+                    )}
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-1 text-xs rounded-full font-medium ${getRoleBadge(user.role)}`}>
+                        {user.role}
+                      </span>
+                      {user.role === 'company' && (
+                        <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                          user.is_approved 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                        }`}>
+                          {user.is_approved ? 'Active' : 'Pending'}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className={`px-4 sm:px-6 py-4 whitespace-nowrap text-sm hidden md:table-cell ${textSecondary}`}>
+                    {new Date(user.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm">
+                    {editingUser?.id === user.id ? (
+                      <div className="flex gap-2">
+                        <button onClick={handleSave} className="text-green-600 hover:text-green-900">
+                          Save
+                        </button>
+                        <button onClick={() => setEditingUser(null)} className={textSecondary}>
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2 sm:gap-3 flex-wrap">
+                        {/* Approve/Reject buttons for companies */}
+                        {user.role === 'company' && (
+                          <>
+                            {user.is_approved === false ? (
+                              <button 
+                                onClick={() => handleApprove(user, true)} 
+                                className="text-green-600 hover:text-green-800 font-medium"
+                              >
+                                Approve
+                              </button>
+                            ) : (
+                              <button 
+                                onClick={() => handleApprove(user, false)} 
+                                className="text-orange-600 hover:text-orange-800 font-medium"
+                              >
+                                Suspend
+                              </button>
+                            )}
+                          </>
+                        )}
+                        <button onClick={() => handleEdit(user)} className="text-indigo-600 hover:text-indigo-900">
+                          Edit
+                        </button>
+                        <button onClick={() => handleDelete(user.id)} className="text-red-600 hover:text-red-900">
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        {users.length === 0 && (
+          <div className={`text-center py-8 ${textSecondary}`}>
+            No users found
+          </div>
+        )}
+      </div>
+      
+      <div className={`mt-4 text-sm ${textSecondary}`}>
+        Total: {users.length} users
+      </div>
+    </div>
+  );
+};
+
+export default UserManagementPage;
