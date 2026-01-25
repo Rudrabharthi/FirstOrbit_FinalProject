@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../services/api";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useTheme } from "../context/ThemeContext";
@@ -118,3 +118,116 @@ const CompanyManagementPage = () => {
 
               <div className="mb-3">
                 <p className={`text-xs sm:text-sm mb-1 ${textSecondary}`}>Email:</p>
+                <p className={`text-sm ${textPrimary}`}>{company.email}</p>
+              </div>
+
+              {editingCompany?.id === company.id ? (
+                <>
+                  <div className="mb-3">
+                    <p className={`text-xs sm:text-sm mb-1 ${textSecondary}`}>Description:</p>
+                    <textarea
+                      value={editForm.description}
+                      onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                      className={`text-sm border rounded px-2 py-1 w-full h-20 ${inputBg}`}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <p className={`text-xs sm:text-sm mb-1 ${textSecondary}`}>Website:</p>
+                    <input
+                      value={editForm.website}
+                      onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
+                      className={`text-sm border rounded px-2 py-1 w-full ${inputBg}`}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="mb-3">
+                    <p className={`text-xs sm:text-sm mb-1 ${textSecondary}`}>Description:</p>
+                    <p className={`text-sm line-clamp-3 ${textPrimary}`}>
+                      {company.description || "No description"}
+                    </p>
+                  </div>
+                  {company.website && (
+                    <div className="mb-3">
+                      <p className={`text-xs sm:text-sm mb-1 ${textSecondary}`}>Website:</p>
+                      <a 
+                        href={company.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-sm text-indigo-600 hover:underline"
+                      >
+                        {company.website}
+                      </a>
+                    </div>
+                  )}
+                </>
+              )}
+
+              <div className={`text-xs mb-4 ${textSecondary}`}>
+                Registered: {new Date(company.created_at).toLocaleDateString()}
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {editingCompany?.id === company.id ? (
+                  <>
+                    <button
+                      onClick={handleSave}
+                      className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditingCompany(null)}
+                      className={`px-3 py-1 text-sm rounded transition-colors ${isDark ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-300 text-gray-700 hover:bg-gray-400'}`}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleEdit(company)}
+                      className="px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors"
+                    >
+                      Edit
+                    </button>
+                    {company.is_approved ? (
+                      <button
+                        onClick={() => handleApproval(company.id, false)}
+                        className="px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700 transition-colors"
+                      >
+                        Suspend
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleApproval(company.id, true)}
+                        className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                      >
+                        Approve
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(company.id)}
+                      className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {companies.length === 0 && (
+        <div className={`text-center py-12 rounded-lg shadow ${cardBg}`}>
+          <p className={textSecondary}>No companies registered yet</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CompanyManagementPage;
