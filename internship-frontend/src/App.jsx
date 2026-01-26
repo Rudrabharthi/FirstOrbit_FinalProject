@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -105,3 +105,98 @@ function MainContent() {
               }
             />
 
+            {/* Company Routes */}
+            <Route
+              path="/company"
+              element={
+                <ProtectedRoute allowedRoles={["company"]}>
+                  <CompanyDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/company/internships"
+              element={
+                <ProtectedRoute allowedRoles={["company"]}>
+                  <CompanyDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/company/internships/new"
+              element={
+                <ProtectedRoute allowedRoles={["company"]}>
+                  <InternshipFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/company/internships/edit/:id"
+              element={
+                <ProtectedRoute allowedRoles={["company"]}>
+                  <InternshipFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/company/internships/:id/applicants"
+              element={
+                <ProtectedRoute allowedRoles={["company", "admin"]}>
+                  <ApplicantsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Student Routes */}
+            <Route
+              path="/student"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <StudentDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/applications"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <ApplicationListPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Profile Route (all authenticated users) */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "company", "student"]}>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* 404 Route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <ThemeProvider>
+        <AuthProvider>
+          <SidebarProvider>
+            <MainContent />
+          </SidebarProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </Router>
+  );
+}
+
+export default App;
