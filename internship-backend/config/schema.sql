@@ -35,3 +35,34 @@ CREATE TABLE students (
 -- Companies
 CREATE TABLE companies (
     id SERIAL PRIMARY KEY,
+    user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    website VARCHAR(255),
+    logo_path VARCHAR(500),
+    is_approved BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Internships
+CREATE TABLE internships (
+    id SERIAL PRIMARY KEY,
+    company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    required_skills TEXT,
+    location VARCHAR(50) CHECK (location IN ('On-site', 'Remote', 'Hybrid')),
+    duration VARCHAR(100),
+    stipend_type VARCHAR(20) CHECK (stipend_type IN ('Paid', 'Unpaid', 'Negotiable')),
+    stipend_amount DECIMAL(10,2) DEFAULT 0,
+    deadline DATE,
+    openings INTEGER DEFAULT 1,
+    eligibility_cgpa DECIMAL(3,2) DEFAULT 0,
+    eligible_departments TEXT,
+    status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'closed')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Applications
