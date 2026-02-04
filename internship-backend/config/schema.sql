@@ -1,4 +1,4 @@
-﻿-- Internship Management System Database Schema
+-- Internship Management System Database Schema
 -- Run this file to create all required tables
 
 -- Drop tables if they exist (for fresh start)
@@ -91,3 +91,13 @@ CREATE TABLE notifications (
 -- Create indexes for better performance
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_internships_company ON internships(company_id);
+CREATE INDEX idx_internships_status ON internships(status);
+CREATE INDEX idx_applications_internship ON applications(internship_id);
+CREATE INDEX idx_applications_student ON applications(student_id);
+CREATE INDEX idx_applications_status ON applications(status);
+CREATE INDEX idx_notifications_user ON notifications(user_id);
+CREATE INDEX idx_notifications_read ON notifications(is_read);
+
+-- Success message
+SELECT 'Database schema created successfully!' as message;
