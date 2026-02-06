@@ -1,4 +1,4 @@
-﻿import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { query } from '../config/db.js';
 
 // Verify JWT token
@@ -33,3 +33,31 @@ export const auth = async (req, res, next) => {
 // Check if user is admin
 export const isAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied. Admin only.' });
+  }
+  next();
+};
+
+// Check if user is company
+export const isCompany = (req, res, next) => {
+  if (req.user.role !== 'company') {
+    return res.status(403).json({ message: 'Access denied. Company only.' });
+  }
+  next();
+};
+
+// Check if user is student
+export const isStudent = (req, res, next) => {
+  if (req.user.role !== 'student') {
+    return res.status(403).json({ message: 'Access denied. Student only.' });
+  }
+  next();
+};
+
+// Check if user is admin or company
+export const isAdminOrCompany = (req, res, next) => {
+  if (req.user.role !== 'admin' && req.user.role !== 'company') {
+    return res.status(403).json({ message: 'Access denied. Admin or Company only.' });
+  }
+  next();
+};
