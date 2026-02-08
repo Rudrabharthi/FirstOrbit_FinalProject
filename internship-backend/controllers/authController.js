@@ -98,3 +98,58 @@ export const login = async (req, res) => {
           message: 'Your company account is pending approval. Please wait for admin to approve your account.',
           pendingApproval: true
         });
+      }
+    }
+
+    // Generate token
+    const token = generateToken(user.id);
+
+    res.json({
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        profile
+      },
+      token
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Login failed', error: error.message });
+  }
+};
+
+// Get current user profile
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const role = req.user.role;
+
+    let profile = null;
+    if (role === 'student') {
+      const result = await query('SELECT * FROM students WHERE user_id = $1', [userId]);
+      profile = result.rows[0] || null;
+    } else if (role === 'company') {
+      const result = await query('SELECT * FROM companies WHERE user_id = $1', [userId]);
+      profile = result.rows[0] || null;
+    }
+
+    res.json({
+      user: {
+        id: req.user.id,
+        email: req.user.email,
+        role: req.user.role,
+        profile
+      }
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ message: 'Failed to get profile', error: error.message });
+  }
+};
+
+// Update profile
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
