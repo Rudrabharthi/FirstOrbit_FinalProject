@@ -1,4 +1,4 @@
-﻿import bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { query } from '../config/db.js';
 import { sendPasswordResetEmail } from '../utils/emailService.js';
@@ -153,3 +153,140 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
+    const role = req.user.role;
+    const { name, phone, department, skills, companyName, companyDescription, website } = req.body;
+
+    if (role === 'student') {
+      await query(
+        'UPDATE students SET name = $1, phone = $2, department = $3, skills = $4, updated_at = CURRENT_TIMESTAMP WHERE user_id = $5',
+        [name, phone, department, skills, userId]
+      );
+    } else if (role === 'company') {
+      await query(
+        'UPDATE companies SET name = $1, description = $2, website = $3, updated_at = CURRENT_TIMESTAMP WHERE user_id = $4',
+        [companyName || name, companyDescription, website, userId]
+      );
+    }
+
+    res.json({ message: 'Profile updated successfully' });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ message: 'Failed to update profile', error: error.message });
+  }
+};
+
+// Change password (authenticated user)
+export const changePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    // Get user's current password
+    const userResult = await query('SELECT password FROM users WHERE id = $1', [userId]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Verify current password
+    const isValidPassword = await bcrypt.compare(currentPassword, userResult.rows[0].password);
+    if (!isValidPassword) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    // Hash new password and update
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await query('UPDATE users SET password = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [hashedPassword, userId]);
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ message: 'Failed to change password', error: error.message });
+  }
+};
+
+// Simple password reset token storage (in production, use a proper table or Redis)
+const resetTokens = new Map();
+
+// Forgot password - generates a reset token and sends email
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Check if user exists
+    const userResult = await query('SELECT id, email FROM users WHERE email = $1', [email]);
+    if (userResult.rows.length === 0) {
+      // Don't reveal if email exists for security
+      return res.json({ message: 'If this email is registered, you will receive a reset code.' });
+    }
+
+    const user = userResult.rows[0];
+
+    // Generate 6-digit reset code
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Store reset token with expiry (15 minutes)
+    resetTokens.set(email, {
+      code: resetCode,
+      userId: user.id,
+      expires: Date.now() + 15 * 60 * 1000 // 15 minutes
+    });
+
+    // Send email with reset code
+    const emailResult = await sendPasswordResetEmail(email, resetCode);
+    
+    if (emailResult.success) {
+      console.log(`Reset code sent to ${email}`);
+      res.json({ 
+        message: 'If this email is registered, you will receive a reset code shortly.',
+        emailSent: true
+      });
+    } else {
+      // Email failed but still show same message for security
+      console.error('Email sending failed:', emailResult.error);
+      res.json({ 
+        message: 'If this email is registered, you will receive a reset code.',
+        // For development/debugging only
+        demoCode: resetCode,
+        emailError: emailResult.error
+      });
+    }
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ message: 'Failed to process request', error: error.message });
+  }
+};
+
+// Reset password with code
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    // Check if reset token exists
+    const tokenData = resetTokens.get(email);
+    if (!tokenData) {
+      return res.status(400).json({ message: 'Invalid or expired reset code' });
+    }
+
+    // Check if code matches and hasn't expired
+    if (tokenData.code !== code) {
+      return res.status(400).json({ message: 'Invalid reset code' });
+    }
+
+    if (Date.now() > tokenData.expires) {
+      resetTokens.delete(email);
+      return res.status(400).json({ message: 'Reset code has expired' });
+    }
+
+    // Hash new password and update
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await query('UPDATE users SET password = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [hashedPassword, tokenData.userId]);
+
+    // Clear the reset token
+    resetTokens.delete(email);
+
+    res.json({ message: 'Password reset successfully. You can now login with your new password.' });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ message: 'Failed to reset password', error: error.message });
+  }
+};
