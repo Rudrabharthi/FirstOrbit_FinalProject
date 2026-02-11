@@ -1,4 +1,4 @@
-﻿import { query } from '../config/db.js';
+import { query } from '../config/db.js';
 import bcrypt from 'bcryptjs';
 
 // Get all users (Admin only)
@@ -78,3 +78,78 @@ export const updateUser = async (req, res) => {
     
     // Get user role
     const userResult = await query('SELECT role FROM users WHERE id = $1', [id]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    const role = userResult.rows[0].role;
+    
+    // Update profile based on role
+    if (role === 'student' && (name || phone || department || skills)) {
+      await query(
+        `UPDATE students SET 
+          name = COALESCE($1, name), 
+          phone = COALESCE($2, phone), 
+          department = COALESCE($3, department), 
+          skills = COALESCE($4, skills),
+          updated_at = CURRENT_TIMESTAMP 
+        WHERE user_id = $5`,
+        [name, phone, department, skills, id]
+      );
+    } else if (role === 'company' && (companyName || companyDescription || website)) {
+      await query(
+        `UPDATE companies SET 
+          name = COALESCE($1, name), 
+          description = COALESCE($2, description), 
+          website = COALESCE($3, website),
+          updated_at = CURRENT_TIMESTAMP 
+        WHERE user_id = $4`,
+        [companyName, companyDescription, website, id]
+      );
+    }
+    
+    res.json({ message: 'User updated successfully' });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({ message: 'Failed to update user', error: error.message });
+  }
+};
+
+// Delete user (Admin)
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Prevent deleting yourself
+    if (parseInt(id) === req.user.id) {
+      return res.status(400).json({ message: 'Cannot delete your own account' });
+    }
+    
+    const result = await query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ message: 'Failed to delete user', error: error.message });
+  }
+};
+
+// Get students only
+export const getStudents = async (req, res) => {
+  try {
+    const result = await query(`
+      SELECT u.id, u.email, u.created_at, s.name, s.phone, s.department, s.skills, s.resume_path
+      FROM users u
+      JOIN students s ON u.id = s.user_id
+      ORDER BY s.name
+    `);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get students error:', error);
+    res.status(500).json({ message: 'Failed to get students', error: error.message });
+  }
+};
