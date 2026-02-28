@@ -1,4 +1,4 @@
-# Internship Management System - Setup Guide
+﻿# Internship Management System - Setup Guide
 
 ## Prerequisites
 - Node.js 18+ installed
