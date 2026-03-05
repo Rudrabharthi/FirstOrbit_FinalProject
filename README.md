@@ -69,4 +69,4 @@ npm run dev
 ## Team
 - Rudra Goswami
 - Shreya Manavadariya
-- Kush Thakar
+- Kush Thakar (Cyber Raavan)
