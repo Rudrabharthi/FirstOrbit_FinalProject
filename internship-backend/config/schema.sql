@@ -13,7 +13,8 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(255),
+    google_id VARCHAR(255),
     role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'company', 'student')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -85,6 +86,16 @@ CREATE TABLE notifications (
     message TEXT,
     type VARCHAR(50) DEFAULT 'info',
     is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Interview Resources (YouTube videos for interview prep)
+CREATE TABLE interview_resources (
+    id SERIAL PRIMARY KEY,
+    youtube_url VARCHAR(500) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_by INTEGER REFERENCES users(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
