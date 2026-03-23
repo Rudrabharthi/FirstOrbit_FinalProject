@@ -13,6 +13,7 @@ import applicationRoutes from './routes/applications.js';
 import notificationRoutes from './routes/notifications.js';
 import analyticsRoutes from './routes/analytics.js';
 import uploadRoutes from './routes/upload.js';
+import interviewResourceRoutes from './routes/interviewResources.js';
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,7 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/interview-resources', interviewResourceRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
