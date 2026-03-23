@@ -1,7 +1,11 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 import { query } from '../config/db.js';
 import { sendPasswordResetEmail } from '../utils/emailService.js';
+
+// Google OAuth client
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Generate JWT token
 const generateToken = (userId) => {
@@ -201,6 +205,85 @@ export const changePassword = async (req, res) => {
   } catch (error) {
     console.error('Change password error:', error);
     res.status(500).json({ message: 'Failed to change password', error: error.message });
+  }
+};
+
+// Google OAuth Login
+export const googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    // Verify the Google ID token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+
+    // Check if user exists by google_id or email
+    let userResult = await query(
+      'SELECT * FROM users WHERE google_id = $1 OR email = $2',
+      [googleId, email]
+    );
+
+    let user;
+
+    if (userResult.rows.length === 0) {
+      // Create new user (default role: student)
+      const newUserResult = await query(
+        'INSERT INTO users (email, google_id, role) VALUES ($1, $2, $3) RETURNING id, email, role',
+        [email, googleId, 'student']
+      );
+      user = newUserResult.rows[0];
+
+      // Create student profile with Google name
+      await query(
+        'INSERT INTO students (user_id, name) VALUES ($1, $2)',
+        [user.id, name || 'Google User']
+      );
+
+      // Create welcome notification
+      await query(
+        'INSERT INTO notifications (user_id, title, message, type) VALUES ($1, $2, $3, $4)',
+        [user.id, 'Welcome!', 'Welcome to FirstOrbit! Your account has been created via Google.', 'success']
+      );
+    } else {
+      user = userResult.rows[0];
+
+      // Update google_id if user exists by email but doesn't have google_id
+      if (!user.google_id) {
+        await query('UPDATE users SET google_id = $1 WHERE id = $2', [googleId, user.id]);
+      }
+    }
+
+    // Get profile based on role
+    let profile = null;
+    if (user.role === 'student') {
+      const profileResult = await query('SELECT * FROM students WHERE user_id = $1', [user.id]);
+      profile = profileResult.rows[0] || null;
+    } else if (user.role === 'company') {
+      const profileResult = await query('SELECT * FROM companies WHERE user_id = $1', [user.id]);
+      profile = profileResult.rows[0] || null;
+    }
+
+    // Generate JWT token
+    const token = generateToken(user.id);
+
+    res.json({
+      message: 'Google login successful',
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        profile
+      },
+      token
+    });
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(401).json({ message: 'Google authentication failed', error: error.message });
   }
 };
 
