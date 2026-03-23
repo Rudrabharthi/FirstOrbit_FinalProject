@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { GoogleLogin } from "@react-oauth/google";
 import authService from "../services/authService";
 
 const SignupPage = () => {
@@ -49,8 +50,36 @@ const SignupPage = () => {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await authService.googleLogin(credentialResponse.credential);
+      login(response.user, response.token);
+
+      // Redirect based on role
+      if (response.user.role === "admin") {
+        navigate("/admin");
+      } else if (response.user.role === "company") {
+        navigate("/company");
+      } else if (response.user.role === "student") {
+        navigate("/student");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Google signup failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Google authentication was unsuccessful. Please try again.");
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
@@ -91,6 +120,13 @@ const SignupPage = () => {
           className="mt-8 space-y-6 bg-lavender dark:bg-gray-800 p-8 rounded-lg shadow dark:border dark:border-gray-700"
           onSubmit={handleSubmit(onSubmit)}
         >
+          {/* Highlighted Disclaimer Box */}
+          <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-800 dark:text-yellow-300 p-3 rounded-lg shadow-[0_0_15px_rgba(234,179,8,0.2)] text-sm text-center font-medium mb-6">
+            🎓 <span className="font-bold">Google Sign Up</span> is for Students only.
+            <br />
+            🏢 Companies must select "Company" below and register with an email.
+          </div>
+
           {error && (
             <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded">
               {error}
@@ -273,7 +309,30 @@ const SignupPage = () => {
             </button>
           </div>
 
-          <div className="text-center">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-lavender dark:bg-gray-800 text-gray-500">
+                Or sign up with
+              </span>
+            </div>
+          </div>
+
+          <div className="flex justify-center mt-4">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap
+              theme="outline"
+              text="signup_with"
+              shape="rectangular"
+              width="100%"
+            />
+          </div>
+
+          <div className="text-center mt-6">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{" "}
               <Link
