@@ -1,6 +1,6 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
-import { register, login, getProfile, updateProfile, changePassword, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { register, login, getProfile, updateProfile, changePassword, forgotPassword, resetPassword, googleLogin } from '../controllers/authController.js';
 import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -51,5 +51,8 @@ router.post('/reset-password', [
   body('code').isLength({ min: 6, max: 6 }).withMessage('Reset code must be 6 digits'),
   body('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters')
 ], validate, resetPassword);
+
+// Google OAuth Login
+router.post('/google', googleLogin);
 
 export default router;
