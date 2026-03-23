@@ -48,6 +48,16 @@ INSERT INTO notifications (user_id, title, message, type) VALUES
 (2, 'Welcome to IMS!', 'Your company account has been approved. You can now post internships and view applicants.', 'success'),
 (3, 'Welcome Student!', 'Start exploring internship opportunities and apply to kickstart your career!', 'info');
 
+-- Insert Sample Interview Resources (YouTube Videos)
+DELETE FROM interview_resources;
+INSERT INTO interview_resources (youtube_url, title, description, created_by) VALUES
+('https://www.youtube.com/watch?v=HG68Ymazo18', 'Top 10 Job Interview Questions & Answers (for 1st & 2nd Interviews)', 'Learn how to answer the most common job interview questions with confidence. Covers questions like Tell me about yourself, Why should we hire you, and more.', 1),
+('https://www.youtube.com/watch?v=1qw5ITr3k9E', 'Self Introduction in Interview | How to Introduce Yourself', 'Master the art of self-introduction in interviews. This video covers the perfect structure for introducing yourself professionally.', 1),
+('https://www.youtube.com/watch?v=Tt08KmFfIYQ', 'How To Introduce Yourself In An Interview! (The BEST ANSWER!)', 'A step-by-step guide on how to give the best self-introduction in any job interview. Includes sample answers and tips.', 1),
+('https://www.youtube.com/watch?v=kayOhGRcNt4', 'How to Crack Any Interview | Interview Tips', 'Comprehensive guide covering body language, preparation strategies, common mistakes, and proven techniques to ace any interview.', 1),
+('https://www.youtube.com/watch?v=2a30Hdp3V_Y', 'HR Interview Questions and Answers for Freshers', 'Essential HR interview questions every fresher should prepare for. Includes detailed answers and explanation of what the interviewer is looking for.', 1),
+('https://www.youtube.com/watch?v=WEDIj9JBTC8', 'Top 6 Tips For The Fresher Job Interview', 'Practical tips specifically for freshers and students appearing for their first job or internship interviews. Covers resume, dress code, and communication.', 1);
+
 -- Success message
 SELECT 'Seed data inserted successfully!' as message;
 SELECT 'Demo Accounts:' as info;
