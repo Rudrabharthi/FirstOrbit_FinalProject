@@ -29,6 +29,8 @@ import UserManagementPage from "./pages/UserManagementPage";
 import CompanyManagementPage from "./pages/CompanyManagementPage";
 import ProfilePage from "./pages/ProfilePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import InterviewResourcesPage from "./pages/InterviewResourcesPage";
+import AdminInterviewResourcesPage from "./pages/AdminInterviewResourcesPage";
 
 function MainContent() {
   const { isAuthenticated } = useAuth();
@@ -41,7 +43,7 @@ function MainContent() {
     : '';
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-200 ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-200 ${isDark ? 'text-white' : 'text-gray-900'}`}>
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
@@ -105,6 +107,15 @@ function MainContent() {
               }
             />
 
+            <Route
+              path="/admin/interview-resources"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminInterviewResourcesPage />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Company Routes */}
             <Route
               path="/company"
@@ -161,6 +172,15 @@ function MainContent() {
               element={
                 <ProtectedRoute allowedRoles={["student"]}>
                   <ApplicationListPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/student/interview-resources"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <InterviewResourcesPage />
                 </ProtectedRoute>
               }
             />
